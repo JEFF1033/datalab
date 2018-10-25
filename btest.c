@@ -23,6 +23,7 @@
 #include <setjmp.h>
 #include <math.h>
 #include <time.h>
+#include <stdint.h>
 #include "btest.h"
 
 /* Not declared in some stdlib.h files, so define here */

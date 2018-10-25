@@ -2,7 +2,7 @@
 
 #include <limits.h>
 #include <math.h>
-
+#include <stdint.h>
 /* Routines used by floation point test code */
 
 /* Convert from bit level representation to floating point number */
@@ -27,7 +27,7 @@ unsigned f2u(float f)
     return a.u;
 }
 
-int test_absVal(int x)
+int test_absVal(int32_t x)
 {
     return (x < 0) ? -x : x;
 }

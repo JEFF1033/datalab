@@ -109,9 +109,13 @@ NOTES:
  *   Max ops: 10
  *   Rating: 4
  */
-int absVal(int x)
+#include <stdint.h>
+
+int absVal(int32_t x)
 {
-    return 42;
+    int32_t y = x >> 31;
+
+    return (x ^ y) + (y & 1);
 }
 
 /*
@@ -122,9 +126,12 @@ int absVal(int x)
  *   Max ops: 20
  *   Rating: 3
  */
-int addOK(int x, int y)
+int addOK(int32_t x, int32_t y)
 {
-    return 42;
+    int32_t sum = x + y;
+    int over_neg = (x < 0) && (y < 0) && (sum >= 0);
+    int over_pos = (x >= 0) && (y >= 0) && (sum < 0);
+    return (!over_neg) && (!over_pos);
 }
 
 /*
@@ -135,9 +142,15 @@ int addOK(int x, int y)
  *   Max ops: 12
  *   Rating: 2
  */
-int allEvenBits(int x)
+int allEvenBits(int32_t x)
 {
-    return 42;
+    int i, a = 1;
+    for (i = 0; i <= 3; i++) {
+        x = x & (x >> a * 2);
+        a = a * 2;
+    }
+
+    return x = (x & 0x01);
 }
 
 /*
@@ -148,9 +161,14 @@ int allEvenBits(int x)
  *   Max ops: 12
  *   Rating: 2
  */
-int allOddBits(int x)
+int allOddBits(int32_t x)
 {
-    return 42;
+    int i, a = 1;
+    for (i = 0; i <= 3; i++) {
+        x = x & (x >> a * 2);
+        a = a * 2;
+    }
+    return x = (x >> 1 & 0x01);
 }
 
 /*
@@ -161,9 +179,15 @@ int allOddBits(int x)
  *   Max ops: 12
  *   Rating: 2
  */
-int anyEvenBit(int x)
+int anyEvenBit(int32_t x)
 {
-    return 42;
+    int i, a = 1;
+    for (i = 0; i <= 3; i++) {
+        x = x | (x >> a * 2);
+        a = a * 2;
+    }
+
+    return x = (x & 0x01);
 }
 
 /*
@@ -174,9 +198,14 @@ int anyEvenBit(int x)
  *   Max ops: 12
  *   Rating: 2
  */
-int anyOddBit(int x)
+int anyOddBit(int32_t x)
 {
-    return 42;
+    int i, a = 1;
+    for (i = 0; i <= 3; i++) {
+        x = x | (x >> a * 2);
+        a = a * 2;
+    }
+    return x = (x >> 1 & 0x01);
 }
 
 /*
@@ -186,9 +215,15 @@ int anyOddBit(int x)
  *   Max ops: 12
  *   Rating: 4
  */
-int bang(int x)
+int bang(int32_t x)
 {
-    return 42;
+    int i;
+    for (i = 0; i <= 31; i++) {
+        x = x | (x >> 1);
+    }
+
+    x = ~x & 0x01;
+    return x;
 }
 
 /*
@@ -200,7 +235,7 @@ int bang(int x)
  */
 int bitAnd(int x, int y)
 {
-    return 42;
+    return ~((~x) | (~y));
 }
 
 /*
@@ -212,7 +247,21 @@ int bitAnd(int x, int y)
  */
 int bitCount(int x)
 {
-    return 42;
+    int mask1 = 0x55;
+    int mask2 = 0x33;
+    int mask3 = 0x0F;
+    int result = 0;
+    mask1 = mask1 | (mask1 << 8);
+    mask1 = mask1 | (mask1 << 16);
+    mask2 = mask2 | (mask2 << 8);
+    mask2 = mask2 | (mask2 << 16);
+    mask3 = mask3 | (mask3 << 8);
+    mask3 = mask3 | (mask3 << 16);
+
+    result = (x & mask1) + ((x >> 1) & mask1);
+    result = (result & mask2) + ((result >> 2) & mask2);
+    result = (result & mask3) + ((result >> 4) & mask3);
+    return (result + (result >> 8) + (result >> 16) + (result >> 24)) & 0xff;
 }
 
 /*
@@ -227,7 +276,14 @@ int bitCount(int x)
  */
 int bitMask(int highbit, int lowbit)
 {
-    return 42;
+    int mask = ~1;
+    mask = mask << highbit;
+    mask = ~mask;
+    int l = 1 << lowbit;
+    l = l + (~1 + 1);
+
+    int mask1 = mask & ~l;
+    return mask1;
 }
 
 /*
@@ -240,7 +296,10 @@ int bitMask(int highbit, int lowbit)
  */
 int bitMatch(int x, int y)
 {
-    return 42;
+    int a = x & y;
+    int b = (~x & ~y);
+
+    return ~(~a & ~b);
 }
 
 /*
@@ -252,7 +311,7 @@ int bitMatch(int x, int y)
  */
 int bitNor(int x, int y)
 {
-    return 42;
+    return (~x & ~y);
 }
 
 /*
@@ -264,7 +323,7 @@ int bitNor(int x, int y)
  */
 int bitOr(int x, int y)
 {
-    return 42;
+    return ~(~x & ~y);
 }
 
 /*
