@@ -218,7 +218,7 @@ int anyOddBit(int32_t x)
 int bang(int32_t x)
 {
     int i;
-    for (i = 0; i <= 31; i++) {
+    for (i = 0; i <= 30; i++) {
         x = x | (x >> 1);
     }
 
@@ -386,7 +386,13 @@ int bitXor(int x, int y)
  */
 int byteSwap(int x, int n, int m)
 {
-    return 42;
+    int y = 0;
+    n = n << 3;                        // n == n*3
+    m = m << 3;                        // m == n*3
+    y = 0xff & ((x >> n) ^ (x >> m));  // 1111 1111
+    x = x ^ (y << n);
+    x = x ^ (y << m);
+    return x;
 }
 
 /*
@@ -398,7 +404,12 @@ int byteSwap(int x, int n, int m)
  */
 int conditional(int x, int y, int z)
 {
-    return 42;
+    int f, g, h;
+    f = !x;
+    g = (~f) + 1;
+    h = ~g;
+
+    return (z & g) + (y & h);
 }
 
 /*
@@ -412,7 +423,27 @@ int conditional(int x, int y, int z)
  */
 int countLeadingZero(int x)
 {
-    return 42;
+    x = x | (x >> 1);
+    x = x | (x >> 2);
+    x = x | (x >> 4);
+    x = x | (x >> 8);
+    x = x | (x >> 16);
+    x = ~x;
+    int mask1 = 0x55;
+    int mask2 = 0x33;
+    int mask3 = 0x0F;
+    int result = 0;
+    mask1 = mask1 | (mask1 << 8);
+    mask1 = mask1 | (mask1 << 16);
+    mask2 = mask2 | (mask2 << 8);
+    mask2 = mask2 | (mask2 << 16);
+    mask3 = mask3 | (mask3 << 8);
+    mask3 = mask3 | (mask3 << 16);
+
+    result = (x & mask1) + ((x >> 1) & mask1);
+    result = (result & mask2) + ((result >> 2) & mask2);
+    result = (result & mask3) + ((result >> 4) & mask3);
+    return (result + (result >> 8) + (result >> 16) + (result >> 24)) & 0xff;
 }
 
 /*
