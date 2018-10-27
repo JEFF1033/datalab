@@ -455,7 +455,13 @@ int countLeadingZero(int x)
  */
 int copyLSB(int x)
 {
-    return 42;
+    int i;
+    x = x & 0x01;
+    for (i = 0; i <= 32; i++) {
+        x = x | x << 1;
+    }
+
+    return x;
 }
 
 /*
@@ -467,7 +473,7 @@ int copyLSB(int x)
  */
 int distinctNegation(int x)
 {
-    return 42;
+    return !!(x + x);
 }
 
 /*
@@ -480,7 +486,9 @@ int distinctNegation(int x)
  */
 int dividePower2(int x, int n)
 {
-    return 42;
+    int flag = !(x & (1 << 31));
+    x = x + (1 << (n & (~0 + flag))) + ~0;
+    return x >> n;
 }
 
 /*
@@ -491,7 +499,10 @@ int dividePower2(int x, int n)
  */
 int evenBits(void)
 {
-    return 42;
+    int mask = 0x55 | 0x55 << 8;
+    mask = mask | 0x55 << 16;
+    mask = mask | 0x55 << 24;
+    return mask;
 }
 
 /*
@@ -507,7 +518,10 @@ int evenBits(void)
  */
 int ezThreeFourths(int x)
 {
-    return 42;
+    int a = (x << 1) + x;  // a = x * 3;
+    int y = !!(a & (0x1 << 31));
+    int b = a + (0x3 & (y | y << 1));
+    return b >> 2;
 }
 
 /*
@@ -521,7 +535,10 @@ int ezThreeFourths(int x)
  */
 int fitsBits(int x, int n)
 {
-    return 42;
+    int tmp = ~((~n) + 1);
+    int tmpx = x >> tmp;
+    int ans = (!tmpx | !(tmpx + 1));
+    return ans;
 }
 
 /*
@@ -534,7 +551,9 @@ int fitsBits(int x, int n)
  */
 int fitsShort(int x)
 {
-    return 42;
+    int a = x >> 15;
+    int res = !a | !(a + 1);
+    return res;
 }
 
 /*
